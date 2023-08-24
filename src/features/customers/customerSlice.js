@@ -9,9 +9,9 @@ export default function customerReducer(state = initialStateCustomer, action) {
     case "customer/createCustomer":
       return {
         ...state,
-        fullName: action.payLoan.fullName,
-        nationalID: action.payLoan.nationalID,
-        createdAt: action.payLoan.createdAt,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt,
       };
     case "customer/updateName":
       return { ...state, fullName: action.payLoan };
