@@ -1,12 +1,13 @@
-import { applyMiddleware, combineReducers, createStore } from "redux"; // it is old method to use redux. NEW method is redux-tool-kit
+//  This is the latest way of using Redux
+import { configureStore } from "@reduxjs/toolkit";
 import accountReducer from "./features/accounts/accountSlice";
 import customerReducer from "./features/customers/customerSlice";
-import thunk from "redux-thunk";
 
-const rootReducer = combineReducers({
-  account: accountReducer,
-  customer: customerReducer,
+const store = configureStore({
+  reducer: {
+    account: accountReducer,
+    customer: customerReducer,
+  },
 });
-const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store;

@@ -11,7 +11,8 @@ function BalanceDisplay({ balance }) {
   return <div className="balance">{formatCurrency(balance)}</div>;
 }
 
-// OLD way to connect redux to react
+// OLD way to connect redux to react by using connect API
+// new ways are useSelector and useDispatch that used in other file of this project ( recommended and easy 👍)
 function mapStateToProps(state) {
   // This state coming from redux
   return {
