@@ -13,6 +13,7 @@ const accountSlice = createSlice({
   reducers: {
     deposit(state, action) {
       state.balance += action.payload;
+      state.isLoading = false;
     },
     withdraw(state, action) {
       state.balance -= action.payload;
@@ -33,16 +34,42 @@ const accountSlice = createSlice({
         state.balance = state.balance + action.payload.amount;
       },
     },
-    payLoan(state, action) {
+    payLoan(state) {
       state.balance -= state.loan;
       state.loan = 0;
       state.loanPurpose = "";
     },
+    convertingCurrency(state) {
+      state.isLoading = true;
+    },
   },
 });
 
-export const { deposit, withdraw, requestLoan, payLoan } = accountSlice.actions;
-export default accountSlice.reducer;
+export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
+
+// NOTE:
+// This THUNKS is provided by the redux-toolkit so we dont have to install it manually
+// There is also a proper way to use it ( but this is a easy and short way )
+// but remember to use same name and type to make it work
+export function deposit(amount, currency) {
+  if (currency === "USD") return { type: "account/deposit", payload: amount };
+
+  // if the currency change this function will return
+  // react will know this is THUNKS and will wait for api response ans then send data to store.
+  // means its a async operation
+  return async function (dispatch, getState) {
+    dispatch({ type: "account/convertingCurrency" });
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await res.json();
+    const converted = data.rates.USD;
+
+    dispatch({ type: "account/deposit", payload: converted });
+  };
+}
+
+export default accountSlice.reducer; // Store.js needs reducer
 
 // OLD code for writing Redux ( use with store-v2.js)
 // export default function accountReducer(state = initialState, action) {
